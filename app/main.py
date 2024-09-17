@@ -22,7 +22,7 @@ def ready():
         <h2>Service Up and Running! 😈</h2>
 
         <p>
-            <a href="http://0.0.0.0:8001//docs" style="text-decoration: none; color: blue;">Click here open docs</a>
+            <a href="https://vector-shift-api.onrender.com/docs" style="text-decoration: none; color: blue;">Click here open docs</a>
         </p>
 
     </body>
