@@ -16,7 +16,6 @@ class Parser:
         nodes = pipeline.nodes
         edges = pipeline.edges
 
-        print("\n\n\n coming here ")
         # Count nodes and edges
         num_nodes: int = len(nodes)
         num_edges: int = len(edges)
@@ -37,8 +36,13 @@ class Parser:
             for edge in edges:
                 G.add_edge(edge.source, edge.target)
 
-            # Check if the graph is a DAG
-            is_dag: bool = nx.is_directed_acyclic_graph(G)
+            # Check for cycles explicitly
+            try:
+                cycle = nx.find_cycle(G, orientation='original')
+
+                is_dag = False
+            except nx.NetworkXNoCycle:
+                is_dag = True
 
             # Return the results
             return ParsePipelineResponse(

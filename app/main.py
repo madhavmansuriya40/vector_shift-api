@@ -50,7 +50,6 @@ async def parse_pipeline(request: Request) -> ParsePipelineResponse:
         pipeline = Pipeline(**pipeline_data)
     except Exception as ex:
         if 'validation errors for Pipeline' in str(ex):
-
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Incomplete pipeline")
@@ -60,6 +59,5 @@ async def parse_pipeline(request: Request) -> ParsePipelineResponse:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="An unexpected error occurred.")
 
-    print('4')
     # parser pipeline
     return await Parser.parse(pipeline=pipeline)
