@@ -11,20 +11,21 @@ class Parser:
         pass
 
     async def parse(pipeline: Pipeline) -> ParsePipelineResponse:
+
+        # Extract nodes and edges
+        nodes = pipeline.nodes
+        edges = pipeline.edges
+
+        print("\n\n\n coming here ")
+        # Count nodes and edges
+        num_nodes: int = len(nodes)
+        num_edges: int = len(edges)
+        if num_edges == 0 or num_nodes == 0:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="No graph can be with 0 edge or 0 node")
+
         try:
-
-            print(f"\nlets try")
-
-            # Extract nodes and edges
-            nodes = pipeline.nodes
-            edges = pipeline.edges
-
-            # Count nodes and edges
-            num_nodes: int = len(nodes)
-            num_edges: int = len(edges)
-            print(
-                f"\n\n\n edges and nodes extracted with len -> {num_nodes} and {num_edges} respectively")
-
             # Create a directed graph
             G = nx.DiGraph()
 

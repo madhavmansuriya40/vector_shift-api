@@ -1,11 +1,21 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException, status
 from fastapi.responses import HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from schemas.pipeline_response import ParsePipelineResponse
 from schemas.pipeline import Pipeline
 from pipeline.parser import Parser
 
 app = FastAPI()
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Or specify your frontend URL here
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -35,11 +45,21 @@ async def parse_pipeline(request: Request) -> ParsePipelineResponse:
 
     # Read and validate JSON data from request
     pipeline_data = await request.json()
-    print("\n\n\n pipeline_data --> ", pipeline_data)
-    pipeline = Pipeline(**pipeline_data)
 
-    print("\n\n\n moulded pipeline_data --> ", pipeline_data)
+    try:
+        pipeline = Pipeline(**pipeline_data)
+    except Exception as ex:
+        if 'validation errors for Pipeline' in str(ex):
 
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Incomplete pipeline")
+        else:
+
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="An unexpected error occurred.")
+
+    print('4')
     # parser pipeline
-    print("\n\n\n calling parse")
     return await Parser.parse(pipeline=pipeline)
